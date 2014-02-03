@@ -32,19 +32,6 @@
 									Ext.get('geojson-link').update(response.responseText);
 									// to make it work like non-toggle button
 									save_action.toggle(false);
-									contextMenu = new Ext.menu.Menu({
-										items: [{
-											text: 'Edit',
-											iconCls: 'edit',
-											//handler: edit
-										}]
-									});
-
-									save_action.btnEl.on('contextmenu', function(e) {
-										e.preventDefault();
-										contextMenu.show(Ext.getCmp('save-action').btnEl);
-									});
-
 									//window.location.assign('{% url "webgis.storage.views.ball" %}?ID='+response.responseText);
 								},
 								failure: function(response, opts) {
@@ -62,9 +49,4 @@
 					autoEl: {tag: 'a', href: '#', html: ''}
 				}
 				mappanel.getTopToolbar().add('-', action, geojson_link);
-				
-					
-
-
-
 
