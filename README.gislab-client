@@ -1,0 +1,5 @@
+gislab.client : ja si davam video memory 16MB , (mozem skusit aj 3d acceleraciu, ale nemal som pocas QGIS/db_manager/push_table zapnute, neviem ci stabilne)
+zapinam IO APIC
+zapinam System -> processor -> PAE/NX
+network -> host-only (vboxnet2)
+

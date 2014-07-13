@@ -1,0 +1,8 @@
+#!/bin/bash
+function slowdown {
+	while read l ; do echo $1 "$l" ; sleep 0.001 ; done
+}
+exec 3>&1
+exec 1>&2
+exec 2>&3
+{ /usr/bin/pg_comparator "$@" 2>&3 |  slowdown ; } 3>&1 1>&2 | slowdown

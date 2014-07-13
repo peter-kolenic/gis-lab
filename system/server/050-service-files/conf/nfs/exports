@@ -1,4 +1,4 @@
-/home                       *(rw,sync,no_subtree_check,no_root_squash)
+/home                       *(rw,sync,no_subtree_check,no_root_squash) GISLAB_NETWORK.1(rw,sync,no_subtree_check,all_squash,anonuid=LAB1_UID,anongid=LAB1_GID)
 /storage/repository         *(rw,sync,no_subtree_check,no_root_squash)
 /storage/share              *(rw,sync,no_subtree_check,no_root_squash)
 /storage/barrel             *(rw,sync,no_subtree_check,all_squash,insecure)

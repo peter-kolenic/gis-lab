@@ -1,0 +1,7 @@
+# Example plugin
+
+case "$MODE" in
+    finalization)
+	echo -e '/kernel.yama.ptrace_scope/s/1/0/\nwq\n' | ed  $ROOT/etc/sysctl.d/10-ptrace.conf
+    ;;
+esac

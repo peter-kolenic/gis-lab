@@ -1,0 +1,5 @@
+#!/bin/bash
+user_to_switch=${1:-root}
+to_run=${2:-bash}
+DISPLAY2="$(echo $DISPLAY| sed -e 's/^.*:/:/')"
+sudo -H -u "$user_to_switch" bash -c $'export DISPLAY='"$DISPLAY"$' ; export XAUTHORITY=$HOME/.Xauthority ; ( echo "'"$(echo -n "add " ; xauth list "$DISPLAY2")"'" | xauth -q ) ; exec '"$to_run"

@@ -1,0 +1,49 @@
+eclipse debugging:
+
+1. gislab.client /usr/share/pyshared/qgis -> eclipse host pyshared-qgis
+2. gislab.client /usr/share/qgis/python/ -> eclipse host qgis-python
+------
+ a) skusit linky gislab.client:/home/lab1/pyshared-qgis -> /usr/share/pyshared/qgis
+	a potom pristupovat cez HOME (nfs share)
+	- nefunguje, NFS len vrati symlinku
+ b) mount -o bind, a potom pristupovat cez HOME (nfs share)
+ 	- problem je, ze bind by musel byt na gislab.client (len tam je k dispozicii qgis), ale k HOME
+ 	  sme pripojeny cez gislab.server
+------
+3. aplikovat eclipse-qgis-debug.patch (hlavne nizsie, ale aj metadata.txt - inak nepolezie do naseho pluginu)
+	diff --git a/python/plugins/db_manager/db_manager_plugin.py b/python/plugins/db_manager/db_manager_plugin.py
+	index e8261a7..0c2f484 100644
+	--- a/python/plugins/db_manager/db_manager_plugin.py
+	+++ b/python/plugins/db_manager/db_manager_plugin.py
+	@@ -28,6 +28,22 @@ try:
+	 except ImportError:
+	 	pass
+
+	+try:
+	+	debug_host = "192.168.59.1"
+	+	debug_port = 5678
+	+	import socket
+	+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	+	sock.settimeout(0.5)
+	+	sock.connect((debug_host,debug_port))
+	+	print "%s:%d connected" % (debug_host, debug_port)
+	+	sock.close()
+	+	import sys
+	+	sys.path.append("/home/lab1/pysrc")
+	+	from pydevd import settrace
+	+	settrace(host=debug_host, port=debug_port, suspend=False, stdoutToServer=True, stderrToServer=True, trace_only_current_thread=False)
+	+except:
+	+	print "%s:%d closed. not connecting to debugger" % (debug_host, debug_port)
+4. skopirovat eclipse host: /opt/eclipse/plugins/org.python.pydev_2.7.1.2012100913/pysrc
+   na gislab.client: ~/pysrc, a upravit gislab.client: ~/pysrc/pydevd_file_utils.py:
+
+	-PATHS_FROM_ECLIPSE_TO_PYTHON = []
+	+PATHS_FROM_ECLIPSE_TO_PYTHON = [
+	+				("/Users/koli/Desktop/projects/gista/gis-lab/HOME/lab1","/home/lab1"),
+	+				("/Users/koli/projects/gista/gis-lab/HOME/lab1","/home/lab1"),
+	+				("/Users/koli/Desktop/projects/gista/gis-lab/qgis-python","/usr/share/qgis/python"),
+	+				("/Users/koli/Desktop/projects/gista/gis-lab/pyshared-qgis","/usr/share/pyshared/qgis"),
+	+			]
+5. symlinka na gislab.client: ~/.qgis2/python/plugins/db_manager -(napr)-> ~/QGIS/python/plugins/db_manager
+   zafunguje, aj je v ~/QGIS/python/plugins/db_manager/metadata.txt "version" vyssie cislo (a teraz
+   neviem co, ale asi /usr/share/qgis/python/plugins/db_manager/)

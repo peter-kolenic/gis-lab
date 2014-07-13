@@ -1,0 +1,40 @@
+diff --git a/python/plugins/db_manager/db_manager_plugin.py b/python/plugins/db_manager/db_manager_plugin.py
+index e8261a7..0c2f484 100644
+--- a/python/plugins/db_manager/db_manager_plugin.py
++++ b/python/plugins/db_manager/db_manager_plugin.py
+@@ -28,6 +28,22 @@ try:
+ except ImportError:
+ 	pass
+ 
++try:
++	debug_host = "192.168.59.1"
++	debug_port = 5678
++	import socket
++	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
++	sock.settimeout(0.5)
++	sock.connect((debug_host,debug_port))
++	print "%s:%d connected" % (debug_host, debug_port)
++	sock.close()
++	import sys
++	sys.path.append("/home/lab1/pysrc")
++	from pydevd import settrace
++	settrace(host=debug_host, port=debug_port, suspend=False, stdoutToServer=True, stderrToServer=True, trace_only_current_thread=False)
++except:
++	print "%s:%d closed. not connecting to debugger" % (debug_host, debug_port)
++
+ class DBManagerPlugin:
+ 	def __init__(self, iface):
+ 		self.iface = iface
+diff --git a/python/plugins/db_manager/metadata.txt b/python/plugins/db_manager/metadata.txt
+index 989a887..2098323 100644
+--- a/python/plugins/db_manager/metadata.txt
++++ b/python/plugins/db_manager/metadata.txt
+@@ -2,7 +2,7 @@
+ name=DB Manager
+ description=Manage your databases within QGis
+ category=Database
+-version=0.1.20
++version=0.1.99
+ qgisMinimumVersion=2.0
+ 
+ author=Giuseppe Sucameli

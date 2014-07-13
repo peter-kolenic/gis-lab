@@ -5,6 +5,7 @@
 # packages installation
 GISLAB_SERVER_INSTALL_PACKAGES="
   nfs-kernel-server
+  pgadmin3
 "
 apt-get --assume-yes --force-yes --no-install-recommends install $GISLAB_SERVER_INSTALL_PACKAGES
 
@@ -22,7 +23,9 @@ chown root:nogroup /storage/barrel
 chmod 775 /storage/barrel
 
 # NFS share exports
-cp $GISLAB_INSTALL_CURRENT_ROOT/conf/nfs/exports /etc/exports
+LAB1_UID=$(id -u lab1 2> /dev/null || echo 3000)
+LAB1_GID=$(id -g lab1 2> /dev/null || echo 3001)
+cat $GISLAB_INSTALL_CURRENT_ROOT/conf/nfs/exports | sed -e "s/\<GISLAB_NETWORK\>/$GISLAB_NETWORK/g" -e "s/\<LAB1_UID\>/$LAB1_UID/g" -e "s/\<LAB1_GID\>/$LAB1_GID/g" > /etc/exports
 gislab_config_header_to_file /etc/exports
 
 # user IDs mapping
